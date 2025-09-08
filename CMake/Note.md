@@ -53,7 +53,7 @@
 
 ## 2. 完成给定的Task
 
-### 2.1 任务一 ：编译命令小试牛刀
+### 2.1 任务一：编译命令小试牛刀
 
 ```bash
 # 将源码进行预处理, 并将处理后的文本输出到输出流中
@@ -193,3 +193,37 @@ $^
 %.o : %.c
 	gcc -c $@ -o $<
 ```
+
+### 2.3 任务三：自己写CMakeLists.txt
+
+#### 2.3.1 一个很简单的示例
+
+```cmake
+# 开头声明所需最低版本号
+cmake_minimum_required(VERSION *.*)
+
+# 设置工程名称
+project(foo)
+
+# 设置头文件搜索路径
+include_directories(include)
+
+# 设置变量
+set(VAR foo.c bar.c)
+
+# 查找匹配模式的文件
+# <arg>可以是GLOB, 查找范围在当前目录; 也可以是GLOB_RECURSIVE, 查找范围在当前目录以及其子目录
+# <var>是存储查找结果的变量名
+file(<arg> <var> <pattern>)
+
+#编译可执行文件
+add_excutable(<name> <src>)
+```
+
+#### 2.3.2 一些碎碎念
+
+我说这玩意儿真好用吧😀😀😀
+不知道比手写Makefile高到哪里去了
+感觉甚至应该直接学CMakeLists怎么写
+初学Makefile现在都感觉有点浪费时间😭😭😭
+那玩意儿我可是捣鼓了整整两天呐😭😭😭

@@ -1,0 +1,3 @@
+/mnt/c/Users/qimin/Documents/Files/2025/JoTang2025/CMake/Task/MakeFile/build/CMakeFiles/hello.dir
+/mnt/c/Users/qimin/Documents/Files/2025/JoTang2025/CMake/Task/MakeFile/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/qimin/Documents/Files/2025/JoTang2025/CMake/Task/MakeFile/build/CMakeFiles/rebuild_cache.dir
