@@ -2,27 +2,35 @@
 CC = gcc
 
 #编译选项
+#-Iinclude : 设置编译器头文件查找路径
 CFLAGS = -g -O2 -Wall -Werror -Iinclude
 
+#最终的可执行文件
 TARGET = hello.out
 
+#中间目标文件
 OBJECTS = hello.o lib/add.o lib/mul.o
- 
+
+#设置源码查找位置
+vpath %.c .:./lib
+
+#设置头文件查找位置
+vpath %.h .:./include
 
 # TODO
 $(TARGET) : $(OBJECTS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-hello.o : hello.c ./include/hello.h ./include/add.h
+#设置头文件关联
+hello.o : add.h hello.h
+add.o : add.h hello.h
+mul.o : mul.h hello.
+
+#统一规则
+%.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-add.o : ./lib/add.c ./include/hello.h ./include/add.h 
-	$(CC) $(CFLAGS) -c $< -o $@
-
-mul.o : ./lib/mul.c ./include/hello.h ./include/mul.h
-	$(CC) $(CFLAGS) -c $< -o $@
-	
+#设置clean命令
 .PHONY : clean
-
 clean : 
 	rm -rf $(TARGET) $(OBJECTS)
