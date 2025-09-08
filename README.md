@@ -8,3 +8,5 @@
 
 - GitLearn, 用来存放他学习Git时进行测试的各种东西和笔记
 - InstallWSL, 用来记录他安装WSL的整个过程
+- CMake, 用来存放他学习编译过程, Makefile的编写, CMakeLists的编写等等东西的所有东西
+- Backend, 用来存放他学习后端时涉及到的所有东西
