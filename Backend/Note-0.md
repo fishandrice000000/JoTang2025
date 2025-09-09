@@ -6,7 +6,7 @@
 
 ~~所以受苦的部分还在后面~~
 
-<img src=".\Pic\0.1.png" alt="helloworld!" style="zoom:50%;" />
+<img src=".\Pic\0.1.1.png" alt="helloworld!" style="zoom:50%;" />
 
 ## 0.2 hello world! ，但是Spring Boot项目
 
@@ -27,17 +27,17 @@
 
 ### 0.2.2 先搞Spring Boot
 
-话说`Spring Boot`是什么❓
+- 话说`Spring Boot`是什么❓
 
-问了下DeepSeek，大概好像跟`C++`里的`Qt`是一个生态位的
+  问了下DeepSeek，大概好像跟`C++`里的`Qt`是一个生态位的
 
-不管了，我先去给好的`Spring`官方文档读一下
+  不管了，我先去给好的`Spring`官方文档读一下
 
-发现要用到什么`Maven`或者`Gradle`，这俩又是啥？
+- 发现要用到什么`Maven`或者`Gradle`，这俩又是啥？
 
-又问了下DeepSeek，大概好像跟`CMake`是一个生态位的
+  又问了下DeepSeek，大概好像跟`CMake`是一个生态位的
 
-在问了下群中dalao后，决定先使用`Maven`
+  在问了下群中dalao后，决定先使用`Maven`
 
 <img src=".\Pic\0.2.2.png" alt="0.2.2" style="zoom: 50%;" />
 
@@ -190,6 +190,24 @@
   ![0.2.5](.\Pic\0.2.5.png)
 
 - 成功了！😭😭😭
+
+### 0.2.3 回答一下剩下的疑惑
+
+- 接口是啥？怎么写？
+
+  接口就是一个标定好的`URL` 
+
+  代码中的注解`@GetMapping("/Hello")`就是在标明一个接口
+
+- 如何让程序通过浏览器访问网页？
+
+  `Spring Boot`框架已经替我搞定了这一点
+
+  具体如何实现，不是我现在作为一个小白应该操心的问题
+
+- 什么叫“给浏览器返回一个字符串”？
+
+  服务器（也就是运行着刚才写的程序的电脑）在响应了浏览器的http请求后，会把设定好的"Hello World!"返回到浏览器
 
 ## 0.3 理解
 
