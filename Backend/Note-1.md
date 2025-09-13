@@ -75,7 +75,7 @@
 
   ```mysql
   -- 创建表
-  -- <col_attribute>包括了数据结构、约束、位置、注释等等信息
+  -- <col_attribute>属性，包括了数据类型、约束、位置、注释等等信息
   CREATE TABLE [IF NOT EXISTS] <name> (
     <col_name> <col_attribute>, 
     <col_name> <col_attribute>,
@@ -93,7 +93,7 @@
     CHANGE [COLUMN] <col_name> <another_col_name> <col_attribute>, -- 修改列的名字和定义，必须重新指定其定义
     MODIFY [COLUMN] <col_name> <col_attribute>, -- 修改列的定义，必须重新指定其定义
     RENAME [COLUMN] <col_name> TO <new_name>; -- 修改列的名字
-    
+    ADD CONSTRAINT <constraint> -- 增加表级约束条件
   -- 清空表（只清空内容，不改变结构）
   TRUNCATE TABLE <name>;
   DELETE FROM <name>;
@@ -101,19 +101,53 @@
   DROP COLUMN <name>;
   ```
   
+- 什么是数据类型？
+
+  >**数据类型（Data Type）**定义了数据在数据库中的存储格式、取值范围以及可执行的操作。
+  >
+  >​	——DeepSeek R1
+
+  常用以下数据类型
+
+  ```mysql
+  -- 数值类
+  TINYINT -- 一字节整数
+  SMALLINT -- 二字节整数
+  INT -- 四字节整数
+  BIGINT -- 八字节整数
+  DOUBLE -- 双精度浮点数
+  DECIMAL(M, D) -- 精确存储小数，M为总位数，D为小数位数
+  
+  -- 字符类
+  CHAR(N) -- 固定长度为N的字符串
+  VARCHAR (N) -- 最大长度为N的字符串
+  TEXT -- 长文本
+  
+  -- 时间类
+  DATE -- 'YYYY-MM-DD'
+  TIME -- 'HH:MM:SS'
+  DATETIME -- 'YYYY-MM-DD HH:MM:SS'
+  TIMESTAMP -- 时间戳
+  
+  -- 枚举与集合类
+  ENUM('val1', 'val2', ...) -- 枚举类型，预定值中多选一
+  SET('val1', 'val2', ...) -- 枚举类型，预定值中多选多
+  ```
+
+  
+
 - 什么是约束条件？
 
   > **约束条件（Constraints）** 是强制存储在表中的数据必须满足的**规则**。
-  > ​	——DeepSeek
-  >
-  
+  > ​	——DeepSeek R1
+
   常用以下约束条件
   ```mysql
   -- 主键，确保表中所有行的此值都唯一，并且不为空
   PRIMARY KEY
   
   -- 外键，这个值必须存在于另一张表的主值或唯一值中
-  FOREIGN KEY
+  FOREIGN KEY <another_table>(<col_name>)
   
   -- 唯一，确保表中所有行的此值都是唯一，无视空值
   UNIQUE
@@ -126,12 +160,15 @@
   
   -- 默认，为此值自动添加默认值
   DEFAULT <expression>
+  
+  -- 自动更新，当其他列被修改时，该列自动修改为某个值
+  ON UPDATE <expression> 	 		
   ```
 
 - 此外还有一些常用属性
 
   ``` mysql
-  -- 为列添加注释
+  -- 添加注释
   COMMENT 'message'
   
   -- 自增，通常用于生成唯一的id
@@ -144,12 +181,74 @@
 
 ### 1.1.4 开始写😀😀😀
 
-​	在学了一大堆东西
+​	在学了一大堆东西：
 
 - 首先是搞清楚了在哪里能方便地写`MySQL`
 
-- 接着是搞清楚了要写个表要会到什么语句
+- 接着是搞清楚了要写个表会用到什么语句
 
 ​	之后，我终于能开始写自己的表了！！！
 
-​	多的也不用废话了，写就完事了
+#### 1.1.4.1 打个草稿✍️✍️✍️
+
+​	先稍微组织一下都要写哪些表、这些表都有哪些列
+
+ - 用户`user`
+   - 用户ID`user_id`
+   - 权限`priviledge` : `admin/user`, 用于管理用户权限
+   - 状态`status`: `active/inactive/suspended`, 激活/注销/封禁, 用于管理用户状态
+   - 用户名`username`
+   - 密码`password`: 使用Bcript加密(Bcript是什么之后再学)
+   - 邮箱`email`: 唯一
+   - 手机号`mobile`: 唯一
+   - 注册时间`create_time`: 用户注册的时间
+   - 更新时间`update_time`: 用户信息更新的时间
+ - 商品`product`
+   - 商品ID`product_id`
+   - 名称`product_name`
+   - 描述`product_description`
+   - 价格`price`
+   - 发布者ID`publisher_id`
+   - 类型`type`: `item/service`
+   - 状态`status`: `sold/unsold`
+   - 发布时间`create_time`
+   - 更新时间`update_time`
+ - 商品订单`product_order`
+   - 订单ID`order_id`
+   - 商品ID`product_id`
+   - 买家ID`buyer_id`
+   - 状态`status`: `ordered/canceled`, 已下单/已取消
+   - 创建时间`create_time`
+   - 更新时间`update_time`
+
+#### 1.1.4.2 正式上场😤😤😤
+
+- 表`user`搞定！
+
+  ![1.1.7](./Pic/1.1.7.png)
+
+- 表`product`搞定！
+
+  ![1.1.8](./Pic/1.1.8.png)
+
+- 表`product_order`搞定！
+
+  ![1.1.9](./Pic/1.1.9.png)
+
+- 结果一览：
+
+  <img src="./Pic/1.1.10.png" alt="1.1.10" style="zoom:50%;" />
+
+## 1.2 Hello, MyBatis!
+
+​	**完蛋！我被接口包围了！**
+
+<img src="./Pic/1.2.1.png" alt="1.2.1" style="zoom: 80%;" />
+
+​	依旧依旧看不懂/.
+
+- 怎样实现`Java`程序同`MySQL`数据库的互动？
+
+  答：使用`MyBatis`
+
+### 1.2.1 
