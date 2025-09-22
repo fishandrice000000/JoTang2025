@@ -11,12 +11,12 @@ import lombok.ToString;
 @ToString
 public class Student {
 
-    Long studentId;
-    String name;
-
     public enum Gender {
         male, female
     }
 
-    Short age;
+    private Long studentId;
+    private String name;
+    private Gender gender;
+    private Short age;
 }

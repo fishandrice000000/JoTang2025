@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.java_web_learning.mapper.StudentMapper">
+    
+    <!-- 
+        注意, 不传入id信息, 等待MySQL自动生成id,
+        并且将id传回给调用方法时所使用的student类中
+    -->
+    <insert id="insertStudent" useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO test_student (name, gender, age)    
+        VALUES (#{name}, #{gender}, #{age})
+    </insert>
+
+    <delete id="deleteStudent">
+        DELETE FROM test_student
+        WHERE student_id = #{studentId}
+    </delete>
+
+    <update id="updateStudent">
+        UPDATE test_student
+        SET 
+            name = #{name},
+            gender = #{gender},
+            age = #{age}
+        WHERE
+            student_id = #{studentId}
+    </update>
+
+    <select id="selectById" resultType="com.example.java_web_learning.pojo.Student">
+        SELECT *  FROM test_student WHERE student_id = #{studentId}
+    </select>
+
+    <select id="selectAll" resultType="com.example.java_web_learning.pojo.Student">
+        SELECT * FROM test_student
+    </select>
+
+</mapper> 
