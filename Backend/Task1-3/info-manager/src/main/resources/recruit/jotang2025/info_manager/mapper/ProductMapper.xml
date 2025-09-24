@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruit.jotang2025.info_manager.mapper.ProductMapper">
+
+    <!-- createProduct --> 
+
+    <insert id="createProduct" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product 
+        (
+            product_name, product_description, price, 
+            publisher_id, type, status, 
+            create_time, update_time
+        )
+        VALUES
+        (
+            #{productName}, #{productDescription}, #{price},
+            #{publisherId}, #{type}, #{status},
+            #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <!-- removeProduct --> 
+
+    <delete id="removeProduct">
+        DELETE FROM product WHERE product_id = #{productId}
+    </delete>
+
+    <!-- updateProduct --> 
+
+    <update id="updateProduct">
+        UPDATE product
+        SET product_name = #{productName},
+            product_description = #{productDescription},
+            price = #{price},
+            publisher_id = #{publisherId},
+            type = #{type},
+            status = #{status},
+            create_time = #{createTime},
+            update_time = #{updateTime}
+        WHERE product_id = #{productId}
+    </update>
+
+    <!-- queryProductById --> 
+
+    <select id="queryProductById">
+        SELECT * FROM product WHERE product_id = #{productId}
+    </select>
+
+    <!-- queryAllProduct --> 
+
+    <select id="queryAllProduct">
+        SELECT * FROM product
+    </select>
+</mapper> 

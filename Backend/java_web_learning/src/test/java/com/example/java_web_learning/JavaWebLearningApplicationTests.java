@@ -1,108 +1,3 @@
-// package com.example.java_web_learning;
-
-// import java.util.List;
-
-// import org.junit.jupiter.api.Test;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.test.context.SpringBootTest;
-
-// import com.example.java_web_learning.controller.StudentController;
-// import com.example.java_web_learning.pojo.Student;
-
-// @SpringBootTest
-// class JavaWebLearningApplicationTests {
-
-//     final String separator = "---------------------------";
-
-//     @Autowired
-//     private StudentController studentController;
-
-//     Long testStudentId = 100l;
-//     Short testStudentAge = 18;
-//     Short newTestStudentAge = 20;
-//     Student testStudent = new Student(testStudentId, "泰斯特", Student.Gender.male, testStudentAge);
-//     Student newTestStudent = new Student(testStudentId, "苔丝特", Student.Gender.female, newTestStudentAge);
-
-//     // 测试查询全部学生
-//     @Test
-//     public void testSelectAll() {
-//         System.out.print("SelectAll");
-
-//         System.out.print(separator);
-
-//         List<Student> studentList = studentController.selectAll();
-//         for (Student stu : studentList) {
-//             System.out.println(stu);
-//             System.out.print(separator);
-//         }
-//     }
-
-//     // 测试按ID查询学生
-//     @Test
-//     public void testSelectById() {
-//         Student stu = studentController.selectById(1l);
-
-//         System.out.print("SelectById");
-//         if (stu != null) {
-//             System.out.println("Success");
-//             System.out.println(stu);
-//         } else {
-//             System.out.println("Fail");
-//         }
-
-//         System.out.print(separator);
-//     }
-
-//     // 测试新增学生
-//     @Test
-//     public void testInsertStudent() {
-//         studentController.insertStudent(testStudent);
-
-//         System.out.print("InsertStudent");
-//         System.out.print(separator);
-
-//         Student newStu = studentController.selectById(testStudent.getStudentId());
-//         if (newStu != null) {
-//             System.out.print("Success");
-//         } else {
-//             System.out.print("Fail");
-//         }
-
-//         System.out.print(separator);
-//     }
-
-//     // 测试更新学生
-//     @Test
-//     public void testUpdateStudent() {
-//         studentController.updateStudent(newTestStudent);
-
-//         System.out.print("UpdateStudent");
-//         System.out.print(separator);
-
-//         Student newStu = studentController.selectById(newTestStudent.getStudentId());
-//         System.out.println(newStu);
-
-//         System.out.print(separator);
-//     }
-
-//     // 测试删除学生
-//     @Test
-//     public void testDeleteStudent() {
-//         studentController.deleteStudent(newTestStudent.getStudentId());
-
-//         System.out.print("DeleteStudent");
-//         System.out.print(separator);
-
-//         Student newStu = studentController.selectById(newTestStudent.getStudentId());
-//         if (newStu == null) {
-//             System.out.print("Success");
-//         } else {
-//             System.out.println("Fail");
-//         }
-
-//         System.out.print(separator);
-//     }
-// }
 package com.example.java_web_learning;
 
 import java.util.List;
@@ -119,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.java_web_learning.controller.StudentController;
-import com.example.java_web_learning.pojo.Student;
+import com.example.java_web_learni  ng.pojo.Student;
 
 @SpringBootTest
 @Transactional // 确保每个测试方法完成后，数据库操作都会被回滚

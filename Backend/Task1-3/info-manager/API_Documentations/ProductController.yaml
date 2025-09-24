@@ -1,0 +1,229 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Product Information Management API'
+  description: API for managing product data, including creation, retrieval, update, and deletion.
+
+paths:
+  # 1. 新增商品信息 (POST /product/create)
+  /product/create:
+    post:
+      summary: Create a new product
+      operationId: createProduct
+      requestBody:
+        description: Product object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product created successfully, returns the number of rows affected (usually 1)
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+                example: 1
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # 2. 删除商品信息 (GET /product/remove)
+  /product/remove:
+    get: 
+      summary: Remove a product by ID
+      operationId: removeProduct
+      parameters:
+        - name: id
+          in: query 
+          description: The unique identifier (productId) of the product to be removed
+          required: true
+          schema:
+            $ref: '#/components/schemas/ProductId'
+      responses:
+        '200':
+          description: Product removed successfully, returns the number of rows affected (usually 1)
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+                example: 1
+        '404':
+          description: No product found for the provided ID
+        '500':
+          description: Internal server error
+
+  # 3. 更新商品信息 (POST /product/update)
+  /product/update:
+    post:
+      summary: Update an existing product
+      operationId: updateProduct
+      requestBody:
+        description: Product object with updated fields. productId must be present.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product updated successfully, returns the number of rows affected (usually 1)
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int32
+                example: 1
+        '404':
+          description: Product ID not found or could not be updated
+        '500':
+          description: Internal server error
+
+  # 4. 按Id查询商品详情 (GET /product/queryById)
+  /product/queryById:
+    get:
+      summary: Query product details by ID
+      operationId: queryProductById
+      parameters:
+        - name: id
+          in: query 
+          description: The unique identifier (productId) of the product
+          required: true
+          schema:
+            $ref: '#/components/schemas/ProductId'
+      responses:
+        '200':
+          description: Successfully returned the product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOutput' 
+        '404':
+          description: No product found for the provided ID
+        '500':
+          description: Internal server error
+
+  # 5. 查询商品列表 (GET /product/queryAll)
+  /product/queryAll:
+    get:
+      summary: Query all products
+      operationId: queryAllProduct
+      responses:
+        '200':
+          description: Successfully returned the list of all products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductOutput'
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    ProductId: 
+      description: The unique identifier of a product
+      type: integer
+      format: int64
+
+    ProductType: 
+      type: string
+      enum:
+        - item
+        - service
+
+    ProductStatus: 
+      type: string
+      enum:
+        - sold
+        - unsold
+
+    ProductInput: 
+      type: object
+      required:
+        - productName
+        - price
+        - publisherId
+        - type
+      properties:
+        productId: 
+          $ref: '#/components/schemas/ProductId'
+        productName:
+          type: string
+          description: 商品名称
+          maxLength: 255
+        productDescription:
+          type: string
+          description: 商品描述
+        price:
+          type: number
+          format: double
+          description: 价格 (decimal(10, 2))
+        publisherId:
+          type: integer
+          format: int64
+          description: 发布者ID
+        type:
+          $ref: '#/components/schemas/ProductType'
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+
+    ProductOutput: 
+      type: object
+      required:
+        - productId
+        - productName
+        - price
+        - publisherId
+        - type
+        - status
+        - createTime
+        - updateTime
+      properties:
+        productId:
+          $ref: '#/components/schemas/ProductId'
+        productName:
+          type: string
+        productDescription:
+          type: string
+        price:
+          type: number
+          format: double
+        publisherId:
+          type: integer
+          format: int64
+        type:
+          $ref: '#/components/schemas/ProductType'
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        createTime:
+          type: string
+          format: date-time
+        updateTime:
+          type: string
+          format: date-time
+        
+    Error: 
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+
+  securitySchemes: 
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+security: 
+  - ApiKey: []
