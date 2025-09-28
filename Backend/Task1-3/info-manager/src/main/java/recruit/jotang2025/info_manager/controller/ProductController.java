@@ -1,8 +1,13 @@
 package recruit.jotang2025.info_manager.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,33 +24,49 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    //新增商品信息
+    // 新增商品信息
     @PostMapping("/create")
-    public Integer createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    //删除商品信息
-    @GetMapping("/remove")
-    public Integer removeProduct(@RequestParam("id") Long productId) {
-        return productService.removeProduct(productId);
+    // 删除商品信息
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeProduct(@RequestParam("id") Long productId) {
+        productService.removeProduct(productId);
+        return ResponseEntity.ok("商品" + productId + "删除成功！");
     }
 
-    //更新商品信息
+    // 更新商品信息
     @PostMapping("/update")
-    public Integer updateProduct(@RequestBody Product product) {
-        return productService.updateProduct(product);
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+        productService.updateProduct(product);
+        return ResponseEntity.ok(product);
     }
 
-    //按Id查询商品详情
+    // 按Id查询商品详情
     @GetMapping("/queryById")
-    public Product queryProductById(@RequestParam("id") Long productId) {
-        return productService.queryProductById(productId);
+    public ResponseEntity<Product> queryProductById(@RequestParam("id") Long productId) {
+        Product newProduct = productService.queryProductById(productId);
+        return ResponseEntity.ok(newProduct);
     }
 
-    //查询商品列表
+    // 查询商品列表
     @GetMapping("/queryAll")
-    public List<Product> queryAllProduct() {
-        return productService.queryAllProduct();
+    public  ResponseEntity<List<Product>> queryAllProduct() {
+        List<Product> newProducts = productService.queryAllProduct();
+        return ResponseEntity.ok(newProducts);
+    }
+
+    // 根据筛选条件查询商品
+    @GetMapping("/queryByFilters")
+    public ResponseEntity<List<Product>> queryProductByFilters(
+            @RequestParam(name = "type", required = false) String type,
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
+            @RequestParam(name = "startTime", required = false) LocalDateTime startTime) {
+        List<Product> products = productService.queryProductByFilters(type, minPrice, maxPrice, startTime);
+        return ResponseEntity.ok(products);
     }
 }

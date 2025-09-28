@@ -20,7 +20,7 @@ public class ProductOrder {
     private Long orderId;
     private Long productId;
     private Long buyerId;
-    private Status status;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private Status status = Status.ordered;
+    private LocalDateTime createTime = LocalDateTime.now();
+    private LocalDateTime updateTime = LocalDateTime.now();
 }

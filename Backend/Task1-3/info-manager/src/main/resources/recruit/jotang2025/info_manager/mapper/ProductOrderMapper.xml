@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruit.jotang2025.info_manager.mapper.ProductOrderMapper">
+
+    <!-- createOrder -->
+
+    <insert id="createOrder" useGeneratedKeys="true" keyProperty="orderId"> 
+        INSERT INTO product_order 
+        (
+            product_id,
+            buy_id,
+            status,
+            create_time,
+            update_time
+        ) 
+        VALUE 
+        (
+            #{productId},
+            #{buyerId},
+            #{status},
+            #{createTime},
+            #{updateTime}
+        )
+        
+    </insert>
+
+    <!-- removeOrder -->
+
+    <delete id="removeOrder"> 
+        DELETE FROM product_order WHERE order_id = #{orderId}
+    </delete>
+
+    <!-- updateOrder -->
+
+    <update id="updateOrder"> 
+        UPDATE product_order
+        SET order_id = #{orderId},
+            product_id = #{productId},
+            buy_id = #{buyId},
+            status = #{status},
+            create_time = #{createTime},
+            update_time = #{updateTime}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <!-- queryOrderById -->
+
+    <select id="queryOrderById" resultType="recruit.jotang2025.info_manager.pojo.ProductOrder">
+        SELECT * FROM product_order WHERE order_id = #{orderId}    
+    </select>
+
+</mapper>

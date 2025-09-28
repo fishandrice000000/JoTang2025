@@ -44,7 +44,7 @@
 
     <!-- queryProductById --> 
 
-    <select id="queryProductById">
+    <select id="queryProductById" resultType="recruit.jotang2025.info_manager.pojo.Product">
         SELECT * FROM product WHERE product_id = #{productId}
     </select>
 
@@ -52,5 +52,31 @@
 
     <select id="queryAllProduct">
         SELECT * FROM product
+    </select>
+
+    <!-- queryProductByFilters --> 
+
+    <select id="queryProductByFilters" resultType="recruit.jotang2025.info_manager.pojo.Product">
+        SELECT * FROM product
+        <where>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+
+            <if test="minPrice != null">
+                AND price >= #{minPrice}
+            </if>
+
+            <if test="maxPrice != null">
+                AND price <= #{maxPrice}
+            </if>
+
+            <if test="startTime != null">
+                AND update_time > #{startTime}
+            </if>
+
+        </where>
+        ORDER BY update_time DESC
+
     </select>
 </mapper> 

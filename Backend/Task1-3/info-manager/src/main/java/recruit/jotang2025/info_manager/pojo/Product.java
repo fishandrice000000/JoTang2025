@@ -29,7 +29,7 @@ public class Product {
     private BigDecimal price;
     private Long publisherId;
     private Type type;
-    private Status status = Product.Status.unsold;
+    private Status status = Status.unsold;
     private LocalDateTime createTime = LocalDateTime.now();
     private LocalDateTime updateTime = LocalDateTime.now();
 }

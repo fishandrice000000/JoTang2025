@@ -1,5 +1,7 @@
 package recruit.jotang2025.info_manager.mapper;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -22,4 +24,6 @@ public interface ProductMapper {
 
     //查询商品列表
     public List<Product> queryAllProduct();
+
+    public List<Product> queryProductByFilters(String type, BigDecimal minPrice, BigDecimal maxPrice, LocalDateTime startTime);
 }
