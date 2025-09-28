@@ -2,10 +2,10 @@ openapi: '3.0.0'
 info:
   version: '1.0.0'
   title: 'Product Information Management API'
-  description: API for managing product data, including creation, retrieval, update, and deletion.
+  description: API for managing product data, including creation, retrieval, update, deletion and filtered query.
 
 paths:
-  # 1. 新增商品信息 (POST /product/create)
+  # 1) 新增商品 (POST /product/create)
   /product/create:
     post:
       summary: Create a new product
@@ -17,6 +17,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProductInput'
+            examples:
+              valid:
+                value:
+                  productName: "测试商品"
+                  productDescription: "用于接口测试的商品"
+                  price: 19.99
+                  publisherId: 1
+                  type: item
+                  status: unsold
       responses:
         '200':
           description: Product created successfully, returns the number of rows affected (usually 1)
@@ -26,21 +35,29 @@ paths:
                 type: integer
                 format: int32
                 example: 1
+        '400':
+          description: Bad Request (invalid body)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+      security:
+        - ApiKey: []
 
-  # 2. 删除商品信息 (GET /product/remove)
+  # 2) 删除商品 (GET /product/remove)
   /product/remove:
-    get: 
+    get:
       summary: Remove a product by ID
       operationId: removeProduct
       parameters:
         - name: id
-          in: query 
+          in: query
           description: The unique identifier (productId) of the product to be removed
           required: true
           schema:
@@ -58,8 +75,10 @@ paths:
           description: No product found for the provided ID
         '500':
           description: Internal server error
+      security:
+        - ApiKey: []
 
-  # 3. 更新商品信息 (POST /product/update)
+  # 3) 更新商品 (POST /product/update)
   /product/update:
     post:
       summary: Update an existing product
@@ -71,6 +90,16 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProductInput'
+            examples:
+              updateNamePrice:
+                value:
+                  productId: 100
+                  productName: "测试商品-改名"
+                  productDescription: "更新后的描述"
+                  price: 25.00
+                  publisherId: 2
+                  type: item
+                  status: unsold
       responses:
         '200':
           description: Product updated successfully, returns the number of rows affected (usually 1)
@@ -82,17 +111,25 @@ paths:
                 example: 1
         '404':
           description: Product ID not found or could not be updated
+        '400':
+          description: Bad Request (null body / invalid fields)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Internal server error
+      security:
+        - ApiKey: []
 
-  # 4. 按Id查询商品详情 (GET /product/queryById)
+  # 4) 按Id查询商品详情 (GET /product/queryById)
   /product/queryById:
     get:
       summary: Query product details by ID
       operationId: queryProductById
       parameters:
         - name: id
-          in: query 
+          in: query
           description: The unique identifier (productId) of the product
           required: true
           schema:
@@ -103,13 +140,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductOutput' 
+                $ref: '#/components/schemas/ProductOutput'
         '404':
           description: No product found for the provided ID
         '500':
           description: Internal server error
+      security:
+        - ApiKey: []
 
-  # 5. 查询商品列表 (GET /product/queryAll)
+  # 5) 查询全部 (GET /product/queryAll)
   /product/queryAll:
     get:
       summary: Query all products
@@ -125,27 +164,82 @@ paths:
                   $ref: '#/components/schemas/ProductOutput'
         '500':
           description: Internal server error
+      security:
+        - ApiKey: []
+
+  # 6) 条件筛选 (GET /product/queryByFilters)
+  /product/queryByFilters:
+    get:
+      summary: Query products by filters
+      operationId: queryProductByFilters
+      parameters:
+        - name: type
+          in: query
+          required: false
+          description: Product type
+          schema:
+            $ref: '#/components/schemas/ProductType'
+        - name: minPrice
+          in: query
+          required: false
+          description: Minimum price (inclusive)
+          schema:
+            type: number
+            format: double
+            example: 5.00
+        - name: maxPrice
+          in: query
+          required: false
+          description: Maximum price (inclusive)
+          schema:
+            type: number
+            format: double
+            example: 50.00
+        - name: startTime
+          in: query
+          required: false
+          description: Return items with create_time >= startTime (ISO-8601 LocalDateTime)
+          schema:
+            type: string
+            format: date-time
+            example: "2025-09-25T00:00:00"
+      responses:
+        '200':
+          description: Successfully returned the filtered products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductOutput'
+        '400':
+          description: Bad Request (e.g., minPrice > maxPrice / invalid time format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+      security:
+        - ApiKey: []
 
 components:
   schemas:
-    ProductId: 
+    ProductId:
       description: The unique identifier of a product
       type: integer
       format: int64
 
-    ProductType: 
+    ProductType:
       type: string
-      enum:
-        - item
-        - service
+      enum: [item, service]
 
-    ProductStatus: 
+    ProductStatus:
       type: string
-      enum:
-        - sold
-        - unsold
+      enum: [sold, unsold]
+      default: unsold
 
-    ProductInput: 
+    ProductInput:
       type: object
       required:
         - productName
@@ -153,7 +247,7 @@ components:
         - publisherId
         - type
       properties:
-        productId: 
+        productId:
           $ref: '#/components/schemas/ProductId'
         productName:
           type: string
@@ -165,17 +259,18 @@ components:
         price:
           type: number
           format: double
-          description: 价格 (decimal(10, 2))
+          description: 价格 (decimal(10,2))
+          example: 19.99
         publisherId:
           type: integer
           format: int64
-          description: 发布者ID
+          description: 发布者ID（存在外键约束）
         type:
           $ref: '#/components/schemas/ProductType'
         status:
           $ref: '#/components/schemas/ProductStatus'
 
-    ProductOutput: 
+    ProductOutput:
       type: object
       required:
         - productId
@@ -206,24 +301,25 @@ components:
         createTime:
           type: string
           format: date-time
+          description: 数据库默认 CURRENT_TIMESTAMP
         updateTime:
           type: string
           format: date-time
-        
-    Error: 
+          description: 数据库 ON UPDATE CURRENT_TIMESTAMP
+
+    Error:
       type: object
-      required:
-        - message
+      required: [message]
       properties:
         message:
-          description: A human readable error message
           type: string
+          description: A human readable error message
 
-  securitySchemes: 
+  securitySchemes:
     ApiKey:
       type: apiKey
       in: header
       name: X-Api-Key
 
-security: 
+security:
   - ApiKey: []
