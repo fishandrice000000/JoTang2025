@@ -36,7 +36,7 @@ class ProductApplicationTests {
 		Long publisherId = 1L;
 		LocalDateTime now = LocalDateTime.now();
 		testProduct = new Product(null, "测试商品", "大家好啊，我是测试商品，给大家一些好看的东西",
-				price, publisherId, Product.Type.item, Product.Status.unsold, now, now);
+				price, publisherId, Product.Type.item, null, now, now);
 		productController.createProduct(testProduct);
 	}
 

@@ -10,12 +10,12 @@
         INSERT INTO product 
         (
             product_name, product_description, price, 
-            publisher_id, type, status
+            publisher_id, type
         )
         VALUES
         (
             #{productName}, #{productDescription}, #{price},
-            #{publisherId}, #{type}, #{status}
+            #{publisherId}, #{type}
         )
     </insert>
 

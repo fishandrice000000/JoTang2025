@@ -9,17 +9,11 @@
         (
             product_id,
             buy_id,
-            status,
-            create_time,
-            update_time
         ) 
         VALUE 
         (
             #{productId},
             #{buyerId},
-            #{status},
-            #{createTime},
-            #{updateTime}
         )
         
     </insert>
