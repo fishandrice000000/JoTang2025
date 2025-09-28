@@ -10,14 +10,12 @@
         INSERT INTO product 
         (
             product_name, product_description, price, 
-            publisher_id, type, status, 
-            create_time, update_time
+            publisher_id, type, status
         )
         VALUES
         (
             #{productName}, #{productDescription}, #{price},
-            #{publisherId}, #{type}, #{status},
-            #{createTime}, #{updateTime}
+            #{publisherId}, #{type}, #{status}
         )
     </insert>
 
@@ -64,15 +62,15 @@
             </if>
 
             <if test="minPrice != null">
-                AND price >= #{minPrice}
+                AND price &gt;= #{minPrice}
             </if>
 
             <if test="maxPrice != null">
-                AND price <= #{maxPrice}
+                AND price &lt;= #{maxPrice}
             </if>
 
             <if test="startTime != null">
-                AND update_time > #{startTime}
+                AND update_time &gt; #{startTime}
             </if>
 
         </where>

@@ -19,24 +19,24 @@ public class ProductOrderExceptionHandler {
     // 订单不存在异常
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found:" + e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     // 商品不存在异常
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> handleProductNotFoundException(ProductNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("404 Not Found:" + e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     // 非法访问异常
     @ExceptionHandler(IllegalOperationException.class)
     public ResponseEntity<String> handleIllegalOperationException(IllegalOperationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400 Bad Request:" + e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     // 非法参数异常
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("400 Bad Request:" + e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

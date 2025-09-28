@@ -37,6 +37,10 @@ public class ProductService {
 
     // 更新商品信息
     public Integer updateProduct(Product product) {
+        // 传入参数为空
+        if (product == null) {
+            throw new IllegalArgumentException("传入参数不能为空！");
+        }
         // 目标商品不存在
         if (queryProductById(product.getProductId()) == null) {
             throw new ProductNotFoundException(product.getProductId());
