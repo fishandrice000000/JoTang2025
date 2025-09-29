@@ -7,11 +7,11 @@
 
 <img src=".\Pic\Task0.png" alt="Task0" style="zoom: 80%;" />
 
-## Task-1
+## Task-1（已完成）
 
 <img src=".\Pic\Task1.png" alt="Task1" style="zoom:80%;" />
 
-## Task-2
+## Task-2（已完成）
 
 <img src=".\Pic\Task2.png" alt="Task2" style="zoom:80%;" />
 
