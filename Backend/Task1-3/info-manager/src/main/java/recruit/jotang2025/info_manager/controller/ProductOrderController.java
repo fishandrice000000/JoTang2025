@@ -44,8 +44,8 @@ public class ProductOrderController {
     // 按ID查询订单
     @GetMapping("/queryById")
     public ResponseEntity<ProductOrder> queryOrderById(@RequestParam("id") Long orderId) {
-        ProductOrder founOrder = productOrderService.queryOrderById(orderId);
-        return ResponseEntity.ok(founOrder);
+        ProductOrder foundOrder = productOrderService.queryOrderById(orderId);
+        return ResponseEntity.ok(foundOrder);
     }
 
     // 下单

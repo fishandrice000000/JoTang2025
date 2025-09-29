@@ -8,12 +8,12 @@
         INSERT INTO product_order 
         (
             product_id,
-            buy_id,
+            buyer_id
         ) 
         VALUE 
         (
             #{productId},
-            #{buyerId},
+            #{buyerId}
         )
         
     </insert>
@@ -30,7 +30,7 @@
         UPDATE product_order
         SET order_id = #{orderId},
             product_id = #{productId},
-            buy_id = #{buyId},
+            buyer_id = #{buyerId},
             status = #{status},
             create_time = #{createTime},
             update_time = #{updateTime}

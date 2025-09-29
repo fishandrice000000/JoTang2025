@@ -50,7 +50,7 @@ public class ProductOrderService {
         ProductOrder newOrder = order;
         // 订单不存在
         if (newOrder == null) {
-            throw new OrderNotFoundException("目标订单不存在");
+            throw new OrderNotFoundException("place:目标订单不存在");
         }
 
         Product relatedProduct = productMapper.queryProductById(newOrder.getProductId());
