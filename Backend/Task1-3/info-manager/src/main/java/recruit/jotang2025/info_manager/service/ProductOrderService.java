@@ -1,6 +1,7 @@
 package recruit.jotang2025.info_manager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,7 @@ import recruit.jotang2025.info_manager.mapper.ProductMapper;
 import recruit.jotang2025.info_manager.mapper.ProductOrderMapper;
 import recruit.jotang2025.info_manager.pojo.Product;
 import recruit.jotang2025.info_manager.pojo.ProductOrder;
+import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
 
 @Service
 public class ProductOrderService {
@@ -21,27 +23,49 @@ public class ProductOrderService {
 
     // 创建订单
     public Integer createOrder(ProductOrder order) {
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            throw new AccessDeniedException("非管理员无法访问该接口！");
+        }
         return productOrderMapper.createOrder(order);
     }
 
     // 删除订单
     public Integer removeOrder(Long orderId) {
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            throw new AccessDeniedException("非管理员无法访问该接口！");
+        }
         return productOrderMapper.removeOrder(orderId);
     }
 
     // 更新订单
     public Integer updateOrder(ProductOrder order) {
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            throw new AccessDeniedException("非管理员无法访问该接口！");
+        }
         return productOrderMapper.updateOrder(order);
     }
 
     // 按ID查询订单
     public ProductOrder queryOrderById(Long orderId) {
-        ProductOrder newOrder = productOrderMapper.queryOrderById(orderId);
+        ProductOrder foundOrder = productOrderMapper.queryOrderById(orderId);
         // 未查询到订单
-        if (newOrder == null) {
+        if (foundOrder == null) {
             throw new OrderNotFoundException(orderId);
         }
-        return newOrder;
+
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            String currentBuyerId = foundOrder.getBuyerId().toString();
+            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            if (!currentUserId.equals(currentBuyerId)) {
+                throw new AccessDeniedException("无法查询属于别人的订单！");
+            }
+        }
+
+        return foundOrder;
     }
 
     // 下单
@@ -62,6 +86,15 @@ public class ProductOrderService {
         if (relatedProduct.getStatus() != Product.Status.unsold) {
             throw new IllegalOperationException("商品已售出");
         }
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            String currentBuyerId = order.getBuyerId().toString();
+            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            if (!currentUserId.equals(currentBuyerId)) {
+                throw new AccessDeniedException("无法替别人下单！");
+            }
+        }
+
         // 设置状态
         relatedProduct.setStatus(Product.Status.sold);
         newOrder.setStatus(ProductOrder.Status.ordered);
@@ -73,25 +106,32 @@ public class ProductOrderService {
     // 取消订单
     @Transactional
     public Integer cancelOrder(Long orderId) {
-        ProductOrder foundOrder = queryOrderById(orderId);
+        ProductOrder toBeCanceledOrder = queryOrderById(orderId);
 
         // 订单已取消
-        if (foundOrder.getStatus() != ProductOrder.Status.ordered) {
+        if (toBeCanceledOrder.getStatus() != ProductOrder.Status.ordered) {
             throw new IllegalOperationException("无法重复取消订单");
         }
-
-        Product foundProduct = productMapper.queryProductById(foundOrder.getProductId());
+        Product foundProduct = productMapper.queryProductById(toBeCanceledOrder.getProductId());
         // 商品不存在
         if (foundProduct == null) {
             throw new ProductNotFoundException("订单对应的商品不存在");
         }
+        // 若当前用户为user
+        if (AuthenticationUtils.currentRoleIsUser()) {
+            String currentBuyerId = toBeCanceledOrder.getBuyerId().toString();
+            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            if (!currentUserId.equals(currentBuyerId)) {
+                throw new AccessDeniedException("无法取消别人的订单！");
+            }
+        }
 
         // 设置状态
         foundProduct.setStatus(Product.Status.unsold);
-        foundOrder.setStatus(ProductOrder.Status.canceled);
+        toBeCanceledOrder.setStatus(ProductOrder.Status.canceled);
         // 更新状态
         productMapper.updateProduct(foundProduct);
-        return updateOrder(foundOrder);
+        return updateOrder(toBeCanceledOrder);
 
     }
 

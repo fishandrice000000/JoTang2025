@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruit.jotang2025.info_manager.mapper.LogInMapper">
+
+    <!-- logIn --> 
+
+    <select id="logIn">
+        SELECT * FROM user 
+        <where>
+            (email = #{email} AND password = #{password})
+            OR
+            (mobile = #{mobile} AND password = #{password})
+        </where>
+    </select>
+</mapper> 

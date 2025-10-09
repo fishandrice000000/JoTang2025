@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class User {
 
-    public enum Privilege {
+    public enum Role {
         admin, user
     }
 
@@ -22,7 +22,7 @@ public class User {
     }
 
     private Long userId;
-    private Privilege privilege;
+    private Role role;
     private Status status;
     private String username;
     private String password;

@@ -3,6 +3,7 @@ package recruit.jotang2025.info_manager.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class ProductOrderController {
 
     // 创建订单
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('admin')")
     public ResponseEntity<ProductOrder> createOrder(@RequestBody ProductOrder order) {
         productOrderService.createOrder(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
@@ -29,6 +31,7 @@ public class ProductOrderController {
 
     // 删除订单
     @DeleteMapping("/remove")
+    @PreAuthorize("hasAnyRole('admin')")
     public ResponseEntity<String> removeOrder(@RequestParam("id") Long orderId) {
         productOrderService.removeOrder(orderId);
         return ResponseEntity.ok("订单" + orderId + "删除成功！");
@@ -36,6 +39,7 @@ public class ProductOrderController {
 
     // 更新订单
     @PostMapping("/update")
+    @PreAuthorize("hasAnyRole('admin')")
     public ResponseEntity<ProductOrder> updateOrder(@RequestBody ProductOrder order) {
         productOrderService.updateOrder(order);
         return ResponseEntity.ok(order);
@@ -43,6 +47,7 @@ public class ProductOrderController {
 
     // 按ID查询订单
     @GetMapping("/queryById")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<ProductOrder> queryOrderById(@RequestParam("id") Long orderId) {
         ProductOrder foundOrder = productOrderService.queryOrderById(orderId);
         return ResponseEntity.ok(foundOrder);
@@ -50,6 +55,7 @@ public class ProductOrderController {
 
     // 下单
     @PostMapping("/placeOrder")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<ProductOrder> placeOrder(@RequestBody ProductOrder order) {
         productOrderService.placeOrder(order);
         return ResponseEntity.ok(order);
@@ -57,6 +63,7 @@ public class ProductOrderController {
 
     // 取消订单
     @DeleteMapping("/cancelOrder")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<String> cancelOrder(@RequestParam("id") Long orderId) {
         productOrderService.cancelOrder(orderId);
         return ResponseEntity.ok("订单" + orderId + "取消成功！");

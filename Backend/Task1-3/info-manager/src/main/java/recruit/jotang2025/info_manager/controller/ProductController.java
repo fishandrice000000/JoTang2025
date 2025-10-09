@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class ProductController {
 
     // 新增商品信息
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
@@ -33,6 +35,7 @@ public class ProductController {
 
     // 删除商品信息
     @DeleteMapping("/remove")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<String> removeProduct(@RequestParam("id") Long productId) {
         productService.removeProduct(productId);
         return ResponseEntity.ok("商品" + productId + "删除成功！");
@@ -40,6 +43,7 @@ public class ProductController {
 
     // 更新商品信息
     @PostMapping("/update")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
         productService.updateProduct(product);
         return ResponseEntity.ok(product);
@@ -47,6 +51,7 @@ public class ProductController {
 
     // 按Id查询商品详情
     @GetMapping("/queryById")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<Product> queryProductById(@RequestParam("id") Long productId) {
         Product newProduct = productService.queryProductById(productId);
         return ResponseEntity.ok(newProduct);
@@ -54,6 +59,7 @@ public class ProductController {
 
     // 查询商品列表
     @GetMapping("/queryAll")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public  ResponseEntity<List<Product>> queryAllProduct() {
         List<Product> newProducts = productService.queryAllProduct();
         return ResponseEntity.ok(newProducts);
@@ -61,6 +67,7 @@ public class ProductController {
 
     // 根据筛选条件查询商品
     @GetMapping("/queryByFilters")
+    @PreAuthorize("hasAnyRole('admin', 'user')")
     public ResponseEntity<List<Product>> queryProductByFilters(
             @RequestParam(name = "type", required = false) String type,
             @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
