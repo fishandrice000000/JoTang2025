@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import recruit.jotang2025.info_manager.utils.JwtUtils;
 
 //@SpringBootTest
 public class JWTTests {
@@ -59,17 +59,10 @@ public class JWTTests {
     @Test
     @Disabled
     void testParseJWT() {
-        String base64Secret = "chuangqianmingyueguangyishidishangshuangjutouwangmingyueditousiguxiang";
-        SecretKey secretKey = Keys.hmacShaKeyFor(base64Secret.getBytes());
-        String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0NTZAYWFhLmNvbSIsImlzcyI6IkNocmlzV3UiLCJpYXQiOjE3NTk2NjU5MjEsImV4cCI6MTc1OTcwOTEyMSwicGFzc3dvcmQiOiIxMjM0NTYiLCJlbWFpbCI6IjEyMzQ1NkBhYWEuY29tIn0.oWCWwfY_pBVGIYZUw2QhHDwkfuVUvY306gudeulhL-iuPT4s2q-haK-3hK5jS2XbwPZj7iTHDPcDaKtoUuvaHg";
+        String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.Bearer .oWCWwfY_pBVGIYZUw2QhHDwkfuVUvY306gudeulhL-iuPT4s2q-haK-3hK5jS2XbwPZj7iTHDPcDaKtoUuvaHg";
 
-        Jws<Claims> jws = Jwts.parser()
-                .verifyWith(secretKey) // 指定解析密钥
-                .build()
-                .parseSignedClaims(jwt); // 解析JWT
+        Claims jws = JwtUtils.parse(jwt);
 
-        Claims payload = jws.getPayload();
-
-        System.out.println(payload);
+        System.out.println(jws);
     }
 }

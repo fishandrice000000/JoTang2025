@@ -23,28 +23,16 @@ public class ProductOrderService {
 
     // 创建订单
     public Integer createOrder(ProductOrder order) {
-        // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
-            throw new AccessDeniedException("非管理员无法访问该接口！");
-        }
         return productOrderMapper.createOrder(order);
     }
 
     // 删除订单
     public Integer removeOrder(Long orderId) {
-        // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
-            throw new AccessDeniedException("非管理员无法访问该接口！");
-        }
         return productOrderMapper.removeOrder(orderId);
     }
 
     // 更新订单
     public Integer updateOrder(ProductOrder order) {
-        // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
-            throw new AccessDeniedException("非管理员无法访问该接口！");
-        }
         return productOrderMapper.updateOrder(order);
     }
 
@@ -63,6 +51,17 @@ public class ProductOrderService {
             if (!currentUserId.equals(currentBuyerId)) {
                 throw new AccessDeniedException("无法查询属于别人的订单！");
             }
+        }
+
+        return foundOrder;
+    }
+
+    // 按ID查询订单, 但是不检查当前访问的用户身份
+    private ProductOrder queryOrderByIdNoRoleCheck(Long orderId) {
+        ProductOrder foundOrder = productOrderMapper.queryOrderById(orderId);
+        // 未查询到订单
+        if (foundOrder == null) {
+            throw new OrderNotFoundException(orderId);
         }
 
         return foundOrder;
@@ -106,7 +105,7 @@ public class ProductOrderService {
     // 取消订单
     @Transactional
     public Integer cancelOrder(Long orderId) {
-        ProductOrder toBeCanceledOrder = queryOrderById(orderId);
+        ProductOrder toBeCanceledOrder = queryOrderByIdNoRoleCheck(orderId);
 
         // 订单已取消
         if (toBeCanceledOrder.getStatus() != ProductOrder.Status.ordered) {

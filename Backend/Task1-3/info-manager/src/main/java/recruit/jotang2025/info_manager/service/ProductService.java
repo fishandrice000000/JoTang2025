@@ -70,7 +70,7 @@ public class ProductService {
         Product toBeUpdatedProduct = queryProductById(product.getProductId());
 
         // 目标商品不存在
-        if (queryProductById(product.getProductId()) == null) {
+        if (toBeUpdatedProduct == null) {
             throw new ProductNotFoundException(product.getProductId());
         }
 

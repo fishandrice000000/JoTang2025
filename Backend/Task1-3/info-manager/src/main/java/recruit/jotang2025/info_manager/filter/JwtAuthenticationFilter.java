@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException // 提前声明这个方法可能会抛出的异常类型
     {
         // 获取请求头中的authorization
-        String authHead = request.getHeader("authorization");
+        String authHead = request.getHeader("Authorization");
 
         // 若没有获得到对应的token或者token格式错误, 直接放行
         // 因为没有Authentication对象被存入SecurityContextHolder, 所以放行之后Spring
@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 从Header中提取JWT, 即Header中删去"BEARER "的部分
+        // 从Header中提取JWT, 即Header中删去"Bearer "的部分
         String jwt = authHead.substring(7);
 
         try {
