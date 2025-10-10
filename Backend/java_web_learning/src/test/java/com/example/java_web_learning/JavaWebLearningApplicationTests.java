@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.java_web_learning.controller.StudentController;
-import com.example.java_web_learni  ng.pojo.Student;
+import com.example.java_web_learning.pojo.Student;
 
 @SpringBootTest
 @Transactional // 确保每个测试方法完成后，数据库操作都会被回滚
