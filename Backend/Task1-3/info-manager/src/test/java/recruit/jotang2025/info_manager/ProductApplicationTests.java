@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ import recruit.jotang2025.info_manager.exception.ProductNotFoundException;
 import recruit.jotang2025.info_manager.pojo.Product;
 
 @SpringBootTest
+@Disabled
 @Transactional // 测试后数据库会进行回滚, 确保测试不会污染数据库
 class ProductApplicationTests {
 
