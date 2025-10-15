@@ -1,5 +1,7 @@
 package recruit.jotang2025.info_manager;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,15 +9,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import recruit.jotang2025.info_manager.utils.JwtUtils;
 
-//@SpringBootTest
+@SpringBootTest
 public class JWTTests {
 
     @Test
@@ -53,16 +53,17 @@ public class JWTTests {
                 .signWith(secretKey) // 指定签名的密钥
 
                 .compact(); // 将令牌转换为字符串
-        System.out.println(jwt);
+
+        assertNotNull(jwt);
     }
 
-    @Test
-    @Disabled
-    void testParseJWT() {
-        String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.Bearer .oWCWwfY_pBVGIYZUw2QhHDwkfuVUvY306gudeulhL-iuPT4s2q-haK-3hK5jS2XbwPZj7iTHDPcDaKtoUuvaHg";
+    // @Test
+    // @Disabled
+    // void testParseJWT() {
+    //     String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.Bearer .oWCWwfY_pBVGIYZUw2QhHDwkfuVUvY306gudeulhL-iuPT4s2q-haK-3hK5jS2XbwPZj7iTHDPcDaKtoUuvaHg";
 
-        Claims jws = JwtUtils.parse(jwt);
+    //     Claims jws = JwtUtils.parse(jwt);
 
-        System.out.println(jws);
-    }
+    //     System.out.println(jws);
+    // }
 }

@@ -1,13 +1,9 @@
 package recruit.jotang2025.info_manager.filter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,6 +14,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
 import recruit.jotang2025.info_manager.utils.JwtUtils;
 
 @Component
@@ -52,15 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String userId = claims.get("sub", String.class);
 
             // 创建Authentication对象, 以便后续访问获取当前访问的用户的身份、权限信息
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            GrantedAuthority a = new SimpleGrantedAuthority("ROLE_" + role);
-            authorities.add(a);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userId, // Principal: 主体, 当前用户的身份标识
-                    null, // Crdentials: 凭证, 当前用户的验证凭证, 一般是密码; 但是在使用JWT时, 通常是先通过凭证来获得JWT, 所以在这里凭证就没有必要了,
-                          // 所以设置为null`
-                    authorities // Authorities: 权限, 当前用户的权限
-            );
+            Authentication authenticationToken = AuthenticationUtils.generateAuthentication(userId, role);
 
             // 将Authentication对象存入SecurityContextHolder, 这之后Spring
             // Security就有办法得知当前访问的用户的信息和权限了
