@@ -243,6 +243,7 @@ public class JWT {
           String role = claims.get("role", String.class);
           String userId = claims.get("userId", String.class);
           
+          // 这些内容被封装在了AuthenticationUtils.generateAuthenticauion方法中
           // 创建Authentication对象, 以便后续访问获取当前访问的用户的身份、权限信息
           List<GrantedAuthority> authority = new ArrayList<>();
           GrantedAuthority a = new SimpleGrantedAuthority("ROLE_" + role);
@@ -596,6 +597,21 @@ curl --location --request DELETE 'http://localhost:8080/order/cancelOrder?id=243
 
 ​	~~报错信息好像有点问题，但是好修~~
 
-### 3.4.4 大功告成🥂🥂🥂
+### 3.4.4 大功告成？🥂🥂🥂
 
-​	这里省略去了一些基础测试，这个部分终于搞定了！
+​	~~这里省略去了一些基础测试，这个部分终于搞定了！~~
+
+​	因为新增加的鉴权功能，这导致之前写的测试类***全都*** `ERROR`了
+
+​	不过幸好这不是一个大问题，只需要在`init()`中再增加一些东西就可以了
+
+![3.4.6](./Pic/3.4.6.png)
+
+![3.4.7](./Pic/3.4.7.png)
+
+### 3.4.5 大功告成！🍻🍻🍻
+
+​	好了，在修改之后就保持全绿了！
+
+![3.4.8](./Pic/3.4.8.png)
+
