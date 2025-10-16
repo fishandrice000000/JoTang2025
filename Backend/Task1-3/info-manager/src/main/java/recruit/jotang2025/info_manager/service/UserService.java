@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import recruit.jotang2025.info_manager.exception.UserNotFoundException;
 import recruit.jotang2025.info_manager.mapper.UserMapper;
 import recruit.jotang2025.info_manager.pojo.User;
 import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
@@ -50,7 +51,7 @@ public class UserService {
         User toBeRemovedUser = queryUserByIdNoCheck(userId);
 
         if (toBeRemovedUser == null) {
-            throw new IllegalArgumentException("无法删除不存在的用户");
+            throw new UserNotFoundException("无法删除不存在的用户");
         }
 
         // 若当前用户为user
@@ -116,7 +117,7 @@ public class UserService {
         User foundUser = queryUserByIdNoCheck(userId);
 
         if (foundUser == null) {
-            throw new IllegalArgumentException("所要封禁的用户不存在");
+            throw new UserNotFoundException("所要封禁的用户不存在");
         }
 
         User.Status currenStatus = foundUser.getStatus();
@@ -133,7 +134,7 @@ public class UserService {
                 return false;
             }
             case inactive -> throw new IllegalArgumentException("所要封禁的用户已注销");
-            default -> throw new AssertionError();
+            default -> throw new RuntimeException("未知错误！");
         }
     }
 }
