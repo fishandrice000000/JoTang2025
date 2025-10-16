@@ -9,7 +9,7 @@ import recruit.jotang2025.info_manager.pojo.User;
 @Mapper
 public interface UserMapper {
     // 注册用户
-    public User register(User user);
+    public Integer register(User user);
 
     // 删除用户
     public Integer deleteUser(Long userId) ;

@@ -9,7 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import recruit.jotang2025.info_manager.exception.IllegalOperationException;
-import recruit.jotang2025.info_manager.exception.UserNotFoundException;
+import recruit.jotang2025.info_manager.exception.ProductNotFoundException;
 import recruit.jotang2025.info_manager.mapper.ProductMapper;
 import recruit.jotang2025.info_manager.pojo.Product;
 import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
@@ -71,7 +71,7 @@ public class ProductService {
 
         // 目标商品不存在
         if (toBeUpdatedProduct == null) {
-            throw new UserNotFoundException(product.getProductId());
+            throw new ProductNotFoundException(product.getProductId());
         }
 
         // 如果当前用户是user
@@ -90,7 +90,7 @@ public class ProductService {
         Product foundProduct = productMapper.queryProductById(productId);
         // 商品不存在
         if (foundProduct == null) {
-            throw new UserNotFoundException(productId);
+            throw new ProductNotFoundException(productId);
         }
         return foundProduct;
     }

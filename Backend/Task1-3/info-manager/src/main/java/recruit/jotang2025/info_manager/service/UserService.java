@@ -31,7 +31,8 @@ public class UserService {
             throw new IllegalArgumentException("不能传入空的用户信息");
         }
 
-        if (user.getEmail().isEmpty() && user.getMobile().isEmpty()) {
+        if ((user.getEmail() == null || user.getEmail().isEmpty())
+                && (user.getMobile() == null || user.getMobile().isEmpty())) {
             throw new IllegalArgumentException("邮箱和手机号不能同时为空！");
         }
 
@@ -78,33 +79,44 @@ public class UserService {
 
         User foundUser = queryUserByIdNoCheck(user.getUserId());
 
+        if (foundUser == null) {
+            throw new UserNotFoundException("无法修改不存在的用户");
+        }
+
         // 若当前用户为user
         if (AuthenticationUtils.currentRoleIsUser()) {
-            if (!foundUser.getUserId().equals(user.getUserId()) ||
-                    !foundUser.getRole().equals(user.getRole()) ||
-                    !foundUser.getStatus().equals(user.getStatus()) ||
-                    !foundUser.getCreateTime().equals(user.getCreateTime())) {
+            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentToBeUpdatedUserId = user.getUserId().toString();
+            if (!currentUserId.equals(currentToBeUpdatedUserId)) {
+                throw new AccessDeniedException("无法修改属于别人的用户信息！");
+            }
+
+            if (!foundUser.getUserId().equals(user.getUserId())
+                    || !foundUser.getRole().equals(user.getRole())
+                    || !foundUser.getStatus().equals(user.getStatus())
+                    || !foundUser.getCreateTime().equals(user.getCreateTime())) {
                 throw new AccessDeniedException("修改了不允许修改的信息！");
             }
+
             foundUser.setUsername(user.getUsername());
             foundUser.setPassword(user.getPassword());
             foundUser.setEmail(user.getEmail());
             foundUser.setMobile(user.getMobile());
             updateUserNoCheck(foundUser);
             return foundUser;
+        } else {
+            foundUser.setUserId(user.getUserId());
+            foundUser.setRole(user.getRole());
+            foundUser.setStatus(user.getStatus());
+            foundUser.setUsername(user.getUsername());
+            foundUser.setPassword(user.getPassword());
+            foundUser.setEmail(user.getEmail());
+            foundUser.setMobile(user.getMobile());
+            foundUser.setCreateTime(user.getCreateTime());
+            updateUserNoCheck(user);
+
+            return foundUser;
         }
-
-        foundUser.setUserId(user.getUserId());
-        foundUser.setRole(user.getRole());
-        foundUser.setStatus(user.getStatus());
-        foundUser.setUsername(user.getUsername());
-        foundUser.setPassword(user.getPassword());
-        foundUser.setEmail(user.getEmail());
-        foundUser.setMobile(user.getMobile());
-        foundUser.setCreateTime(user.getCreateTime());
-        updateUserNoCheck(user);
-
-        return foundUser;
     }
 
     // 查询用户
