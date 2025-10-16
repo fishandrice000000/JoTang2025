@@ -36,7 +36,7 @@ public class SecurityConfig {
 
             // 配置URL的访问权限
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/login", "/").permitAll()  // 访问"/login", "/"的请求总是被允许
+                    .requestMatchers("/login", "/user/register", "/").permitAll()  // 访问"/login", "/"的请求总是被允许
                     .anyRequest().authenticated()   // 除此之外的请求都应当拥有授权
             )
 

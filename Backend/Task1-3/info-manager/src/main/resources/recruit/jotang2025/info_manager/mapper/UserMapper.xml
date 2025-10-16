@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruit.jotang2025.info_manager.mapper.UserMapper">
+
+    <!-- register -->
+    <insert id="register" useGeneratedKeys="true" keyProperty="userId"> 
+        INSERT INTO user
+        (
+            username, password, email, mobile
+        )
+        VALUES 
+        (
+            #{username}, #{password}, #{email}, #{mobile}
+        )
+    </insert>
+
+    <!-- deleteUser -->
+    <update id="deleteUser"> 
+        UPDATE user
+        SET status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- updateUser -->
+    <update id="updateUser"> 
+        UPDATE user 
+        SET role = #{role},
+            status = #{status},
+            username = #{username},
+            password = #{password},
+            email = #{email},
+            mobile = #{mobile},
+            create_time = #{createTime}
+        WHERE user_id = #{userId}
+    </update>
+
+
+    <!-- queryUser -->
+    <select id="queryUser" resultType="recruit.jotang2025.info_manager.pojo.User"> 
+        SELECT * FROM user
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- banUser -->
+    <update id="banUser"> 
+        UPDATE user 
+        SET status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+</mapper> 
+
+    
