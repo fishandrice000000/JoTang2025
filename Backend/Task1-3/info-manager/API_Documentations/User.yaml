@@ -1,0 +1,201 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'User Management API'
+  description: API for managing users, including registration, updates, queries, and administrative actions.
+
+paths:
+  /user/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        description: User object to be created. `username` and `password` are required. Either `email` or `mobile` must be provided.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: User registered successfully. Returns the newly created user object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request (e.g., missing required fields, or both email and mobile are empty).
+
+  /user/delete:
+    delete:
+      summary: Remove a user by ID (soft delete)
+      operationId: deleteUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: The unique identifier of the user to remove.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User removed successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "用户2已删除！"
+        '403':
+          description: Forbidden (e.g., a 'user' trying to remove another user's account).
+        '404':
+          description: User not found.
+
+  /user/update:
+    post:
+      summary: Update an existing user
+      operationId: updateUser
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: User object with updated fields. `userId` must be present. 'user' roles can only update their own `username`, `password`, `email`, and `mobile`. 'admin' roles can update any field.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request (e.g., null body).
+        '403':
+          description: Forbidden (e.g., a 'user' trying to update another user's account or modifying restricted fields like 'role' or 'status').
+        '404':
+          description: User not found.
+
+  /user/query:
+    get:
+      summary: Query users by ID or get all users
+      operationId: queryUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: The unique identifier of the user. If omitted, all users will be returned.
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully returned user(s).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden (only 'admin' role can access this endpoint).
+
+  /user/ban:
+    post:
+      summary: Ban or unban a user
+      operationId: banUser
+      description: Toggles a user's status between 'active' and 'suspended'.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          description: The unique identifier of the user to ban or unban.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: User status changed successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "用户2已封禁!"
+        '400':
+          description: Bad Request (e.g., trying to ban an inactive user).
+        '403':
+          description: Forbidden (only 'admin' role can access this endpoint).
+        '404':
+          description: User not found.
+
+components:
+  schemas:
+    UserInput:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "testuser"
+        password:
+          type: string
+          format: password
+          example: "strongPassword123"
+        email:
+          type: string
+          format: email
+          example: "test@example.com"
+        mobile:
+          type: string
+          example: "13800138000"
+
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+          readOnly: true
+        role:
+          type: string
+          enum: [admin, user]
+          readOnly: true
+        status:
+          type: string
+          enum: [active, inactive, suspended]
+          readOnly: true
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          writeOnly: true
+        email:
+          type: string
+          format: email
+        mobile:
+          type: string
+        createTime:
+          type: string
+          format: date-time
+          readOnly: true
+        updateTime:
+          type: string
+          format: date-time
+          readOnly: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
