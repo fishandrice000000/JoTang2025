@@ -1,0 +1,198 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Product Order Management API'
+  description: API for managing product orders, including placing, canceling, and standard CRUD operations.
+
+paths:
+  /order/create:
+    post:
+      summary: Create an order (Admin only)
+      operationId: createOrder
+      description: Administrative endpoint to create an order directly.
+      requestBody:
+        description: Order object to create. Requires `productId` and `buyerId`.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductOrderInput'
+      responses:
+        '201':
+          description: Order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOrder'
+      security:
+        - ApiKey: []
+
+  /order/remove:
+    delete:
+      summary: Remove an order by ID (Admin only)
+      operationId: removeOrder
+      description: Administrative endpoint to delete an order.
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Order removed successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "订单101删除成功！"
+      security:
+        - ApiKey: []
+
+  /order/update:
+    post:
+      summary: Update an order (Admin only)
+      operationId: updateOrder
+      description: Administrative endpoint to update an order. `orderId` is required in the body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductOrder'
+      responses:
+        '200':
+          description: Order updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOrder'
+      security:
+        - ApiKey: []
+
+  /order/queryById:
+    get:
+      summary: Query order by ID
+      operationId: queryOrderById
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully returned order details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOrder'
+        '403':
+          description: Forbidden (user trying to access another user's order).
+        '404':
+          description: Order not found.
+      security:
+        - ApiKey: []
+
+  /order/placeOrder:
+    post:
+      summary: Place a new order
+      operationId: placeOrder
+      description: Creates an order for a product, and updates the product's status to 'sold'.
+      requestBody:
+        description: Requires `productId` and `buyerId` to place an order.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductOrderInput'
+      responses:
+        '200':
+          description: Order placed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductOrder'
+        '400':
+          description: Bad Request (e.g., product is already sold).
+        '403':
+          description: Forbidden (e.g., placing an order for another user).
+        '404':
+          description: Product to be ordered not found.
+      security:
+        - ApiKey: []
+
+  /order/cancelOrder:
+    delete:
+      summary: Cancel an existing order
+      operationId: cancelOrder
+      description: Cancels an order and reverts the associated product's status to 'unsold'.
+      parameters:
+        - name: id
+          in: query
+          description: The ID of the order to cancel.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Order canceled successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "订单101取消成功！"
+        '400':
+          description: Bad Request (e.g., order is already canceled).
+        '403':
+          description: Forbidden (e.g., canceling another user's order).
+        '404':
+          description: Order or associated product not found.
+      security:
+        - ApiKey: []
+
+components:
+  schemas:
+    ProductOrderInput:
+      type: object
+      required:
+        - productId
+        - buyerId
+      properties:
+        productId:
+          type: integer
+          format: int64
+        buyerId:
+          type: integer
+          format: int64
+
+    ProductOrder:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+        productId:
+          type: integer
+          format: int64
+        buyerId:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum: [ordered, canceled, completed]
+        createTime:
+          type: string
+          format: date-time
+        updateTime:
+          type: string
+          format: date-time
+  
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key

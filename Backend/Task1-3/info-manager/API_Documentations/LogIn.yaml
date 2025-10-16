@@ -1,0 +1,61 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Authentication API'
+  description: API for user authentication and JWT token generation.
+
+paths:
+  /login:
+    post:
+      summary: User Login
+      description: Authenticates a user based on email/mobile and password, and returns a JWT token upon success.
+      operationId: logIn
+      requestBody:
+        description: User credentials for login. Either email or mobile must be provided along with the password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+            examples:
+              loginWithEmail:
+                value:
+                  email: "user@example.com"
+                  password: "password123"
+      responses:
+        '200':
+          description: Login successful, returns JWT token.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsIm1vYmlsZSI6IjEzODAwMTM4MDAwIiwiZXhwIjoxNzYwMzcwNDAwLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20ifQ.abcdefg..."
+        '404':
+          description: User not found or credentials incorrect.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "登录失败"
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address.
+        mobile:
+          type: string
+          description: User's mobile number.
+        password:
+          type: string
+          format: password
+          description: User's password.
+      required:
+        - password
+

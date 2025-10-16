@@ -1,0 +1,223 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Product Management API'
+  description: API for managing products, including CRUD operations and filtered queries.
+
+paths:
+  /product/create:
+    post:
+      summary: Create a new product
+      operationId: createProduct
+      requestBody:
+        description: Product object to be created. `productName`, `price`, `publisherId`, and `type` are required.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request (e.g., invalid input).
+        '403':
+          description: Forbidden (e.g., trying to create a product for another user).
+
+  /product/remove:
+    delete:
+      summary: Remove a product by ID
+      operationId: removeProduct
+      parameters:
+        - name: id
+          in: query
+          description: The unique identifier of the product to remove.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Product removed successfully.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "商品101删除成功！"
+        '403':
+          description: Forbidden (e.g., trying to remove another user's product).
+        '404':
+          description: Product not found.
+
+  /product/update:
+    post:
+      summary: Update an existing product
+      operationId: updateProduct
+      requestBody:
+        description: Product object with updated fields. `productId` must be present to identify the product.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request (e.g., null body).
+        '403':
+          description: Forbidden (e.g., trying to update another user's product).
+        '404':
+          description: Product not found.
+
+  /product/queryById:
+    get:
+      summary: Query product details by ID
+      operationId: queryProductById
+      parameters:
+        - name: id
+          in: query
+          description: The unique identifier of the product.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully returned product details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found.
+
+  /product/queryAll:
+    get:
+      summary: Query all products
+      operationId: queryAllProduct
+      responses:
+        '200':
+          description: Successfully returned a list of all products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+  /product/queryByFilters:
+    get:
+      summary: Query products by filters
+      operationId: queryProductByFilters
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [item, service]
+        - name: minPrice
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+        - name: maxPrice
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+        - name: startTime
+          in: query
+          required: false
+          description: "Items with create_time >= startTime"
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Successfully returned filtered products.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request (e.g., minPrice > maxPrice).
+
+components:
+  schemas:
+    ProductInput:
+      type: object
+      required:
+        - productName
+        - price
+        - publisherId
+        - type
+      properties:
+        productName:
+          type: string
+        productDescription:
+          type: string
+        price:
+          type: number
+          format: double
+        publisherId:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [item, service]
+        status:
+          type: string
+          enum: [sold, unsold]
+          default: unsold
+
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+        productName:
+          type: string
+        productDescription:
+          type: string
+        price:
+          type: number
+          format: double
+        publisherId:
+          type: integer
+          format: int64
+        type:
+          type: string
+          enum: [item, service]
+        status:
+          type: string
+          enum: [sold, unsold]
+        createTime:
+          type: string
+          format: date-time
+        updateTime:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+security:
+  - ApiKey: []
