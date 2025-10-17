@@ -17,7 +17,9 @@ import recruit.jotang2025.info_manager.utils.JwtUtils;
 @RestController
 public class LogInController {
     @Autowired
-    LogInService logInService;
+    private LogInService logInService;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     // 用户登录
     // 请求体中应包含password, 和mobile或email
@@ -43,7 +45,7 @@ public class LogInController {
             claims.put("mobile", mobile);
             claims.put("role", role);
 
-            String jwt = JwtUtils.generate(claims, userId, 12L);
+            String jwt = jwtUtils.generate(claims, userId, 12L);
 
             return ResponseEntity.ok(jwt);
         }

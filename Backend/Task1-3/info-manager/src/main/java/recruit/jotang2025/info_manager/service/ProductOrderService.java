@@ -20,6 +20,8 @@ public class ProductOrderService {
     private ProductOrderMapper productOrderMapper;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private AuthenticationUtils authUtils;
 
     // 创建订单
     public Integer createOrder(ProductOrder order) {
@@ -45,9 +47,9 @@ public class ProductOrderService {
         }
 
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentBuyerId = foundOrder.getBuyerId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             if (!currentUserId.equals(currentBuyerId)) {
                 throw new AccessDeniedException("无法查询属于别人的订单！");
             }
@@ -86,9 +88,9 @@ public class ProductOrderService {
             throw new IllegalOperationException("商品已售出");
         }
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentBuyerId = order.getBuyerId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             if (!currentUserId.equals(currentBuyerId)) {
                 throw new AccessDeniedException("无法替别人下单！");
             }
@@ -117,9 +119,9 @@ public class ProductOrderService {
             throw new ProductNotFoundException("订单对应的商品不存在");
         }
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentBuyerId = toBeCanceledOrder.getBuyerId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             if (!currentUserId.equals(currentBuyerId)) {
                 throw new AccessDeniedException("无法取消别人的订单！");
             }

@@ -9,10 +9,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthenticationUtils {
     // 生成一个认证信息
-    public static Authentication generateAuthentication(String principal, String role) {
+    public Authentication generateAuthentication(String principal, String role) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         SimpleGrantedAuthority a = new SimpleGrantedAuthority("ROLE_" + role);
         authorities.add(a);
@@ -27,12 +29,12 @@ public class AuthenticationUtils {
     }
 
     // 设置当前访问用户的认证信息
-    public static void setAuthentication(Authentication auth) {
+    public void setAuthentication(Authentication auth) {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     // 获得当前访问用户的认证信息
-    public static Authentication getAuthentication() {
+    public Authentication getAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             throw new AccessDeniedException("用户未认证！"); // 谨慎一手再验证一下
@@ -41,13 +43,13 @@ public class AuthenticationUtils {
     }
 
     // 获得当前访问用户的userId
-    public static String getCurrentUserId() {
+    public String getCurrentUserId() {
         Authentication auth = getAuthentication();
         return auth.getPrincipal().toString();
     }
 
     // 判断当前访问用户身份是否为user
-    public static boolean currentRoleIsUser() {
+    public boolean currentRoleIsUser() {
         // 获得当前访问用户的认证信息
         Authentication auth = getAuthentication();
         Boolean isUser = auth // 验证当前用户是否是admin, 也就是验证Authentication的Authorities是否含有ROLE_admin字段

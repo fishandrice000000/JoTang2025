@@ -18,6 +18,8 @@ import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
 public class ProductService {
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private AuthenticationUtils authUtils;
 
     // 新增商品信息
     public Integer createProduct(Product product) {
@@ -27,9 +29,9 @@ public class ProductService {
         }
 
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentPublisherId = product.getPublisherId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             // 检查当前商品的publisherId是否为当前用户的userId
             if (!currentPublisherId.equals(currentUserId)) {
                 throw new AccessDeniedException("无法创建属于别人的商品！");
@@ -48,9 +50,9 @@ public class ProductService {
         }
 
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentPublisherId = toBeRemovedProduct.getPublisherId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             // 检查当前商品的publisherId是否为当前用户的userId
             if (!currentUserId.equals(currentPublisherId)) {
                 throw new AccessDeniedException("无法删除属于别人的商品！");
@@ -75,9 +77,9 @@ public class ProductService {
         }
 
         // 如果当前用户是user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String currentPublisherId = toBeUpdatedProduct.getPublisherId().toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             if (!currentUserId.equals(currentPublisherId)) {
                 throw new AccessDeniedException("无法修改属于别人的商品！");
             }

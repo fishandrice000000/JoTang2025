@@ -24,7 +24,9 @@ import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
 class ProductApplicationTests {
 
 	@Autowired
-	ProductController productController;
+	private ProductController productController;
+	@Autowired
+	private AuthenticationUtils authUtils;
 
 	Product testProduct;
 	Authentication adminAuth;
@@ -33,11 +35,11 @@ class ProductApplicationTests {
 	@BeforeEach // 在每个测试方法之前都运行一次, 为每个测试准备好测试数据
 	public void init() {
 		// 准备好测试用户
-		adminAuth = AuthenticationUtils.generateAuthentication("1", "admin");
-		userAuth = AuthenticationUtils.generateAuthentication("2", "user");
+		adminAuth = authUtils.generateAuthentication("1", "admin");
+		userAuth = authUtils.generateAuthentication("2", "user");
 
 		// 默认用户权限为admin
-		AuthenticationUtils.setAuthentication(adminAuth);
+		authUtils.setAuthentication(adminAuth);
 
 
 		// 准备好测试商品

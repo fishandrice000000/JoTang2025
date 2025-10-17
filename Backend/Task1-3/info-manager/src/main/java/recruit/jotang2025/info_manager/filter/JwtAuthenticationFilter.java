@@ -2,6 +2,7 @@ package recruit.jotang2025.info_manager.filter;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,11 @@ import recruit.jotang2025.info_manager.utils.JwtUtils;
 @Component
 // 继承OncePerRequestFilter来确保每一次外部访问时, 这个Filter都只会被调用一次, 来减少资源的浪费
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    private AuthenticationUtils authUtils;
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request, // 已经发来的HTTP请求
@@ -44,12 +50,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             // 获取载荷
-            Claims claims = JwtUtils.parse(jwt);
+            Claims claims = jwtUtils.parse(jwt);
             String role = claims.get("role", String.class);
             String userId = claims.get("sub", String.class);
 
             // 创建Authentication对象, 以便后续访问获取当前访问的用户的身份、权限信息
-            Authentication authenticationToken = AuthenticationUtils.generateAuthentication(userId, role);
+            Authentication authenticationToken = authUtils.generateAuthentication(userId, role);
 
             // 将Authentication对象存入SecurityContextHolder, 这之后Spring
             // Security就有办法得知当前访问的用户的信息和权限了

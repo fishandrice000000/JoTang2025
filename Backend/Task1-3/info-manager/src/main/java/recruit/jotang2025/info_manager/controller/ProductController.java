@@ -23,7 +23,7 @@ import recruit.jotang2025.info_manager.service.ProductService;
 @RequestMapping("/product")
 public class ProductController {
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     // 新增商品信息
     @PostMapping("/create")

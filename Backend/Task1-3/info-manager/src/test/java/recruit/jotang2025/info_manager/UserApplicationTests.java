@@ -21,7 +21,9 @@ import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
 @Transactional
 public class UserApplicationTests {
     @Autowired
-    UserController userController;
+    private UserController userController;
+    @Autowired
+    private AuthenticationUtils authUtils;
 
     User testNewUser;
     Authentication adminAuth;
@@ -29,8 +31,8 @@ public class UserApplicationTests {
 
     @BeforeEach
     public void init() {
-        adminAuth = AuthenticationUtils.generateAuthentication("1", "admin");
-        userAuth = AuthenticationUtils.generateAuthentication("2", "user");
+        adminAuth = authUtils.generateAuthentication("1", "admin");
+        userAuth = authUtils.generateAuthentication("2", "user");
 
         testNewUser = new User();
         testNewUser.setUsername("test");
@@ -41,7 +43,7 @@ public class UserApplicationTests {
 
     @Test
     void testRegisterNoException() {
-        AuthenticationUtils.setAuthentication(adminAuth);
+        authUtils.setAuthentication(adminAuth);
 
         User newUser = userController.register(testNewUser).getBody();
         User foundUser = userController.queryUser(newUser.getUserId()).getBody().get(0);
@@ -54,7 +56,7 @@ public class UserApplicationTests {
 
     @Test
     void testRegisterWithExeption() {
-        AuthenticationUtils.setAuthentication(adminAuth);
+        authUtils.setAuthentication(adminAuth);
 
         testNewUser.setMobile(null);
         testNewUser.setEmail(null);
@@ -65,11 +67,11 @@ public class UserApplicationTests {
 
     @Test
     void testDeleteNoException() {
-        AuthenticationUtils.setAuthentication(userAuth);
+        authUtils.setAuthentication(userAuth);
 
         userController.deleteUser(2L);
 
-        AuthenticationUtils.setAuthentication(adminAuth);
+        authUtils.setAuthentication(adminAuth);
         User foundUser = userController.queryUser(2L).getBody().get(0);
 
         assertEquals(User.Status.inactive, foundUser.getStatus());
@@ -77,7 +79,7 @@ public class UserApplicationTests {
 
     @Test
     void testDeleteWithException() {
-        AuthenticationUtils.setAuthentication(userAuth);
+        authUtils.setAuthentication(userAuth);
 
         assertThrows(UserNotFoundException.class, () -> userController.deleteUser(101010101L));
         assertThrows(AccessDeniedException.class, () -> userController.deleteUser(3L));
@@ -85,7 +87,7 @@ public class UserApplicationTests {
 
     @Test
     void testUpdateNoException() {
-        AuthenticationUtils.setAuthentication(adminAuth);
+        authUtils.setAuthentication(adminAuth);
 
         User foundUser = userController.queryUser(2L).getBody().get(0);
         String beforeMobile = foundUser.getMobile();
@@ -100,7 +102,7 @@ public class UserApplicationTests {
 
     @Test
     void testUpdateWithException() {
-        AuthenticationUtils.setAuthentication(adminAuth);
+        authUtils.setAuthentication(adminAuth);
 
         User foundUser = userController.queryUser(3L).getBody().get(0);
         User newFoundUser = userController.queryUser(2L).getBody().get(0);
@@ -108,7 +110,7 @@ public class UserApplicationTests {
                 newFoundUser.getUsername(), newFoundUser.getPassword(), newFoundUser.getEmail(),
                 newFoundUser.getMobile(), newFoundUser.getCreateTime(), newFoundUser.getUpdateTime());
 
-        AuthenticationUtils.setAuthentication(userAuth);
+        authUtils.setAuthentication(userAuth);
         assertThrows(AccessDeniedException.class, () -> userController.updateUser(foundUser));
         assertThrows(AccessDeniedException.class, () -> userController.updateUser(userWithIllegalChange));
         assertThrows(IllegalArgumentException.class, () -> userController.updateUser(null));

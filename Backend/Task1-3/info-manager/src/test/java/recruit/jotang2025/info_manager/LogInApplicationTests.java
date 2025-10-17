@@ -1,6 +1,7 @@
 package recruit.jotang2025.info_manager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,9 @@ import recruit.jotang2025.info_manager.utils.JwtUtils;
 @SpringBootTest
 public class LogInApplicationTests {
     @Autowired
-    LogInController logInController;
+    private LogInController logInController;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Test
     void testLogInSuccessfully() {
@@ -39,8 +42,8 @@ public class LogInApplicationTests {
         jwtEmail = emailEntity.getBody();
         jwtMobile = mobileEntity.getBody();
 
-        payloadEmail = JwtUtils.parse(jwtEmail);
-        payloadMobile = JwtUtils.parse(jwtMobile);
+        payloadEmail = jwtUtils.parse(jwtEmail);
+        payloadMobile = jwtUtils.parse(jwtMobile);
 
         assertEquals("2", payloadEmail.get("sub"));
         assertEquals("1", payloadMobile.get("sub"));

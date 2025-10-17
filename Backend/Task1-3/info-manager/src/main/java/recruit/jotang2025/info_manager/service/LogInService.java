@@ -9,7 +9,7 @@ import recruit.jotang2025.info_manager.pojo.User;
 @Service
 public class LogInService {
     @Autowired
-    LogInMapper logInMapper;
+    private LogInMapper logInMapper;
 
     // 用户登录
     public User logIn(User user) {

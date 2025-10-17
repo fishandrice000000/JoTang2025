@@ -20,7 +20,7 @@ import recruit.jotang2025.info_manager.service.UserService;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     // 注册用户
     @PostMapping("/register")
