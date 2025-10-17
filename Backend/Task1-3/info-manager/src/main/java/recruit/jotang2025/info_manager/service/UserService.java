@@ -10,11 +10,16 @@ import recruit.jotang2025.info_manager.exception.UserNotFoundException;
 import recruit.jotang2025.info_manager.mapper.UserMapper;
 import recruit.jotang2025.info_manager.pojo.User;
 import recruit.jotang2025.info_manager.utils.AuthenticationUtils;
+import recruit.jotang2025.info_manager.utils.PasswordEncoderUtils;
 
 @Service
 public class UserService {
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
+    @Autowired
+    private AuthenticationUtils authUtils;
+    @Autowired
+    private PasswordEncoderUtils encoder;
 
     private User queryUserByIdNoCheck(Long userId) {
         List<User> users = userMapper.queryUser(userId);
@@ -42,7 +47,8 @@ public class UserService {
         newUser.setEmail(user.getEmail());
         newUser.setMobile(user.getMobile());
 
-        userMapper.register(newUser);
+        // 加密
+        userMapper.register(encoder.getEncodedUser(newUser));
 
         return queryUserByIdNoCheck(newUser.getUserId());
     }
@@ -56,9 +62,9 @@ public class UserService {
         }
 
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
+        if (authUtils.currentRoleIsUser()) {
             String toBeRemovedUserId = userId.toString();
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+            String currentUserId = authUtils.getCurrentUserId();
             // 检查当前商品的publisherId是否为当前用户的userId
             if (!currentUserId.equals(toBeRemovedUserId)) {
                 throw new AccessDeniedException("无法删除属于别人的账号！");
@@ -72,6 +78,7 @@ public class UserService {
     }
 
     // 更新用户
+    // 必须传入完整的User对象
     public User updateUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("不能传入空的用户信息");
@@ -84,8 +91,8 @@ public class UserService {
         }
 
         // 若当前用户为user
-        if (AuthenticationUtils.currentRoleIsUser()) {
-            String currentUserId = AuthenticationUtils.getCurrentUserId();
+        if (authUtils.currentRoleIsUser()) {
+            String currentUserId = authUtils.getCurrentUserId();
             String currentToBeUpdatedUserId = user.getUserId().toString();
             if (!currentUserId.equals(currentToBeUpdatedUserId)) {
                 throw new AccessDeniedException("无法修改属于别人的用户信息！");
@@ -102,7 +109,8 @@ public class UserService {
             foundUser.setPassword(user.getPassword());
             foundUser.setEmail(user.getEmail());
             foundUser.setMobile(user.getMobile());
-            updateUserNoCheck(foundUser);
+            // 加密
+            updateUserNoCheck(encoder.getEncodedUser(foundUser));
             return foundUser;
         } else {
             foundUser.setUserId(user.getUserId());
@@ -113,7 +121,8 @@ public class UserService {
             foundUser.setEmail(user.getEmail());
             foundUser.setMobile(user.getMobile());
             foundUser.setCreateTime(user.getCreateTime());
-            updateUserNoCheck(user);
+            // 加密
+            updateUserNoCheck(encoder.getEncodedUser(user));
 
             return foundUser;
         }
