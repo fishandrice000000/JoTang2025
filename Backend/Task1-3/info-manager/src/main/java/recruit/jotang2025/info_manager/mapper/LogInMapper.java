@@ -6,5 +6,5 @@ import recruit.jotang2025.info_manager.pojo.User;
 
 @Mapper
 public interface LogInMapper {
-    public User logIn(String email, String mobile, String password);
+    public User logIn(String email, String mobile);
 }

@@ -47,10 +47,13 @@ public class UserService {
         newUser.setEmail(user.getEmail());
         newUser.setMobile(user.getMobile());
 
-        // 加密
-        userMapper.register(encoder.getEncodedUser(newUser));
+        // 加密 `
+        User encodedUser = encoder.getEncodedUser(newUser);
+        userMapper.register(encodedUser);
 
-        return queryUserByIdNoCheck(newUser.getUserId());
+        User finalUser = queryUserByIdNoCheck(newUser.getUserId());
+
+        return finalUser;
     }
 
     // 删除用户

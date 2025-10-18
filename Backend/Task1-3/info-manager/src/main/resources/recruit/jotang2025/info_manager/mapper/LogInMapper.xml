@@ -9,9 +9,9 @@
     <select id="logIn">
         SELECT * FROM user 
         <where>
-            (email = #{email} AND password = #{password})
+            (email = #{email})
             OR
-            (mobile = #{mobile} AND password = #{password})
+            (mobile = #{mobile})
         </where>
     </select>
 </mapper> 

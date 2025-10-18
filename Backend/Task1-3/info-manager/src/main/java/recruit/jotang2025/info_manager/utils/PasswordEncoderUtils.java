@@ -25,4 +25,8 @@ public class PasswordEncoderUtils {
 
         return encodedUser;
     }
+
+    public Boolean isMatch(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 }
